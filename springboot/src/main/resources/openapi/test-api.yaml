@@ -1,0 +1,413 @@
+openapi: 3.0.1
+info:
+  title: PPAP Chat Service API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080 #기초 경로 springboot
+  
+tags:
+  - name: chat
+    description: LLM 채팅
+  - name: qna
+    description: qna 게시판
+  - name: users
+    description: Operations about user
+    
+paths:
+  /chat:
+    post:
+      summary: Ask a question to the chatbot
+      operationId: askQuestion
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AskRequest'
+      responses:
+        '200':
+          description: Successfully retrieved answer
+          content:
+            application/json:
+              schema:
+
+                $ref: '#/components/schemas/AskResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusCode"
+  /api/users/signup:
+    post:
+      tags:
+        - users
+      summary: 사용자 가입
+      description: 새로운 사용자를 가입합니다.
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: 가입 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: 가입 실패
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/StatusCode"
+  /api/users/login:
+    post:
+      tags:
+        - users
+      summary: 사용자 로그인
+      description: 사용자 로그인 처리
+      operationId: userLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/LoginDto'
+      responses:
+        '200':
+          description: 로그인 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/UserToken'
+        '400':
+          description: 로그인 실패
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/StatusCode"
+  /api/users/logout:
+    post:
+      tags:
+        - users
+      summary: 사용자 로그아웃
+      description: 사용자의 세션을 종료하고 토큰을 무효화합니다.
+      operationId: logoutUser
+      security:
+        - bearerAuth: []  # JWT 인증 요구
+      responses:
+        '200':
+          description: 로그아웃 성공
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusCode"
+
+        '401':
+          description: 인증되지 않음
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusCode"
+        '500':
+          description: 서버 오류로 인해 로그아웃 실패
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusCode"
+  /api/users/token/refresh:
+    post:
+      tags:
+        - users
+      summary: 토큰 재발급
+      description: refresh token으로 access token 재발급 받기
+      operationId: getNewToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetNewTokenRequest'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserToken'
+        '400':
+          description: 조회 실패
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusCode"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusCode"
+
+
+                    
+  /api/users/info:
+    get:
+      tags:
+        - users
+      summary: 사용자 상세 조회
+      description: 마이페이지에서 내 정보 조회하기
+      operationId: getUserInfo
+      security:
+        - bearerAuth: [] #JWT 인증 요구 명시
+      responses:
+        '200':
+          description: 조회 성공
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: 조회 실패
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusCode"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusCode"
+    put:
+      tags:
+        - users
+      summary: 사용자 정보 변경
+      operationId: updateUserInfo
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: 수정 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: 수정 실패
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusCode"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusCode"
+    delete:
+      tags:
+        - users
+      summary: 사용자 탈퇴
+      description: 사용자 계정을 탈퇴 처리하고 isWithdrawed 상태를 true로 변경합니다.
+      operationId: deleteUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 탈퇴 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: 탈퇴 실패
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusCode"
+        '401':
+          description: 인증되지 않음 - 액세스 토큰이 없거나 유효하지 않음
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusCode"
+
+      
+components:
+  
+  schemas:
+    AskRequest:
+      type: object
+      properties:
+        question:
+          type: string
+    AskResponse:
+      type: object
+      properties:
+        answer:
+          type: string
+          
+    User:
+      title: User Aggregate
+      description: user info
+      type: object
+      #x-class-extra-annotation: "@jakarta.persistence.Entity"
+      required: 
+        - loginId
+        - username
+        - password
+        - confirmPassword
+        - email
+        - userType
+      properties:
+        userId:
+          type: integer
+          format: int64
+          description: user 테이블 pk
+          #x-field-extra-annotation: "@jakarta.persistence.Id"
+        loginId:
+          type: string
+          description: 사용자 아이디
+        username:
+          type: string
+          description: 사용자 이름
+        password:
+          type: string
+          description: 사용자 비밀번호
+          #pattern: '^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#\$%^&*])[a-zA-Z0-9!@#\$%^&*]{8,20}$'
+          #example: "Passw0rd!"
+        confirmPassword: 
+          type: string
+          description: 사용자 비밀번호 확인
+        email:
+          type: string
+          description: 사용자 이메일
+        isActive:
+          type: boolean
+          description: 사용 여부
+          default: true
+        isWithdrawed:
+          type: boolean
+          description: 탈퇴 여부
+          default: false
+        userType:
+          type: string
+          description: 개인 or 법인 사용자 타입
+          enum:
+            - PRIVATE
+            - BUSINESS
+          #x-constraints: "@ValidType"
+        audit:
+          $ref: '#/components/schemas/Audit'
+    LoginDto:
+      type: object
+      description: 사용자 로그인 dto
+      required:
+        - loginId
+        - password
+      properties:
+        loginId:
+          type: string
+        password:
+          type: string
+
+    UserToken:
+      type: object
+      description: 사용자 json web token
+      required:
+        - accessToken
+        - refreshToken
+        - grantType
+        - loginId
+      properties:
+        accessToken:
+          type: string
+          description: access token
+        refreshToken:
+          type: string
+          description: refresh token
+        grantType:
+          type: string
+          description: jwt 인증타입 bearer
+        loginId:
+          type: string
+          description: 사용자 로그인 아이디
+
+    Role:
+      type: string
+      description: 회원가입 시 권한
+      enum:
+        - USER
+    Audit:
+      type: object
+      properties:
+        createdDate:
+          type: string
+          format: date-time
+          description: 생성일
+        createdBy:
+          type: string
+          description: 생성자
+        modifiedDate:
+          type: string
+          format: date-time
+          description: 수정일
+        modifiedBy:
+          type: string
+          description: 수정자
+
+    GetNewTokenRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+          description: 리프레시 토큰
+        loginId:
+          type: string
+          description: user 로그인 아이디
+
+    StatusCode:
+      type: object
+      properties:
+        '200':
+          type: string
+          example:
+        '400':
+          type: string
+          example: Invalid user data provided
+        '401':
+          type: string
+          example: Unauthorized access
+        '500':
+          type: string
+          example: Internal server error
+   
+      
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []
+         
