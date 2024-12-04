@@ -1,0 +1,11 @@
+# Python
+__pycache__/
+*.pyc
+# Python 가상환경
+ppap/
+# React
+node_modules/
+build/
+
+# Torch large files
+ppap/lib/python3.10/site-packages/torch/lib/libtorch_cpu.dylib
