@@ -20,7 +20,7 @@ app.add_middleware(
 UPLOAD_DIR = "./uploads/"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-@app.post("/api/upload-policy")
+@app.post("/chat/api/upload-policy")
 async def upload_policy(file: UploadFile = File(...)):
     # 정책 파일 업로드 처리
     if file.content_type != "application/pdf":
@@ -32,7 +32,7 @@ async def upload_policy(file: UploadFile = File(...)):
 
     return {"filename": file.filename, "file_path": policy_file_path}
 
-@app.post("/api/upload-guideline")
+@app.post("/chat/api/upload-guideline")
 async def upload_guideline(file: UploadFile = File(...)):
     # 지침 파일 업로드 처리
     if file.content_type != "application/pdf":
@@ -44,7 +44,7 @@ async def upload_guideline(file: UploadFile = File(...)):
 
     return {"filename": file.filename, "file_path": guideline_file_path}
 
-@app.post("/api/ask")
+@app.post("/chat/api/ask")
 async def ask_question(
      query: str = Body(), 
      policy_file_path: str = Body(), 
