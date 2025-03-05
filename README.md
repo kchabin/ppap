@@ -2,9 +2,9 @@
 한이음 및 서울여대 종단형 PBL 수업 졸업 프로젝트 
 ### 개인정보처리방침 평가 프로그램의 개발
 - RAG를 활용한 개인정보처리방침 평가 어시스턴트 챗봇 개발
-- [개발기 1] (https://kchabin.notion.site/PBL-1b3bd222b43d49b4b9d96c78d7b7c970)
-- [개발기 2] (https://uysuiiii.tistory.com/category/PPAP)
-- [ACK 2024 발표 영상] (https://youtu.be/YKkzNylP65w?si=iWwrNF-u7BTk0JmR)
+- [개발기 1](https://kchabin.notion.site/PBL-1b3bd222b43d49b4b9d96c78d7b7c970)
+- [개발기 2](https://uysuiiii.tistory.com/category/PPAP)
+- [ACK 2024 발표 영상](https://youtu.be/YKkzNylP65w?si=iWwrNF-u7BTk0JmR)
 - [KCD Korea x NGINX Meetup](https://www.linkedin.com/posts/kchabin_kubernetes-deployments-with-helm-activity-7303054675962957826-LNfC?utm_source=share&utm_medium=member_desktop&rcm=ACoAAELbAJoBALcm8fzVYHyMqzO_lYzqsJkxlag)
 - AI : ChatGPT API, LangChain, FAISS
 - Backend : SpringBoot, JPA, Kotlin, FastAPI
